@@ -4,8 +4,8 @@ import logging
 from types import TracebackType
 from typing import Optional, Type
 
-from mangum.types import ASGI, LifespanMode, Message
-from mangum.exceptions import LifespanUnsupported, LifespanFailure, UnexpectedMessage
+from caliber.types import ASGI, LifespanMode, Message
+from caliber.exceptions import LifespanUnsupported, LifespanFailure, UnexpectedMessage
 
 
 class LifespanCycleState(enum.Enum):
@@ -61,7 +61,7 @@ class LifespanCycle:
         self.app_queue: asyncio.Queue[Message] = asyncio.Queue()
         self.startup_event: asyncio.Event = asyncio.Event()
         self.shutdown_event: asyncio.Event = asyncio.Event()
-        self.logger = logging.getLogger("mangum.lifespan")
+        self.logger = logging.getLogger("caliber.lifespan")
 
     def __enter__(self) -> None:
         """Runs the event loop for application startup."""
@@ -81,7 +81,8 @@ class LifespanCycle:
         """Calls the application with the `lifespan` connection scope."""
         try:
             await self.app(
-                {"type": "lifespan", "asgi": {"spec_version": "2.0", "version": "3.0"}},
+                {"type": "lifespan", "asgi": {
+                    "spec_version": "2.0", "version": "3.0"}},
                 self.receive,
                 self.send,
             )
@@ -90,7 +91,8 @@ class LifespanCycle:
         except (LifespanFailure, UnexpectedMessage) as exc:
             self.exception = exc
         except BaseException as exc:
-            self.logger.error("Exception in 'lifespan' protocol.", exc_info=exc)
+            self.logger.error(
+                "Exception in 'lifespan' protocol.", exc_info=exc)
         finally:
             self.startup_event.set()
             self.shutdown_event.set()
@@ -138,7 +140,8 @@ class LifespanCycle:
             "lifespan.shutdown.failed",
         ):
             self.state = LifespanCycleState.FAILED
-            raise UnexpectedMessage(f"Unexpected '{message_type}' event received.")
+            raise UnexpectedMessage(
+                f"Unexpected '{message_type}' event received.")
 
         if self.state is LifespanCycleState.STARTUP:
             if message_type == "lifespan.startup.complete":
@@ -147,7 +150,8 @@ class LifespanCycle:
                 self.state = LifespanCycleState.FAILED
                 self.startup_event.set()
                 message_value = message.get("message", "")
-                raise LifespanFailure(f"Lifespan startup failure. {message_value}")
+                raise LifespanFailure(
+                    f"Lifespan startup failure. {message_value}")
 
         elif self.state is LifespanCycleState.SHUTDOWN:
             if message_type == "lifespan.shutdown.complete":
@@ -156,7 +160,8 @@ class LifespanCycle:
                 self.state = LifespanCycleState.FAILED
                 self.shutdown_event.set()
                 message_value = message.get("message", "")
-                raise LifespanFailure(f"Lifespan shutdown failure. {message_value}")
+                raise LifespanFailure(
+                    f"Lifespan shutdown failure. {message_value}")
 
     async def startup(self) -> None:
         """Pushes the `lifespan` startup event to the queue and handles errors."""

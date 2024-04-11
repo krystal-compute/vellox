@@ -3,8 +3,8 @@ import enum
 import logging
 from io import BytesIO
 
-from mangum.types import ASGI, Message, Scope, Response
-from mangum.exceptions import UnexpectedMessage
+from caliber.types import ASGI, Message, Scope, Response
+from caliber.exceptions import UnexpectedMessage
 
 
 class HTTPCycleState(enum.Enum):
@@ -31,7 +31,7 @@ class HTTPCycle:
         self.scope = scope
         self.buffer = BytesIO()
         self.state = HTTPCycleState.REQUEST
-        self.logger = logging.getLogger("mangum.http")
+        self.logger = logging.getLogger("caliber.http")
         self.app_queue: asyncio.Queue[Message] = asyncio.Queue()
         self.app_queue.put_nowait(
             {
@@ -43,7 +43,11 @@ class HTTPCycle:
 
     def __call__(self, app: ASGI) -> Response:
         asgi_instance = self.run(app)
-        loop = asyncio.get_event_loop()
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
         asgi_task = loop.create_task(asgi_instance)
         loop.run_until_complete(asgi_task)
 
@@ -76,10 +80,11 @@ class HTTPCycle:
             elif self.state is not HTTPCycleState.COMPLETE:
                 self.status = 500
                 self.body = b"Internal Server Error"
-                self.headers = [[b"content-type", b"text/plain; charset=utf-8"]]
+                self.headers = [
+                    [b"content-type", b"text/plain; charset=utf-8"]]
 
     async def receive(self) -> Message:
-        return await self.app_queue.get()  # pragma: no cover
+        return await self.app_queue.get()
 
     async def send(self, message: Message) -> None:
         if (

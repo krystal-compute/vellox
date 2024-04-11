@@ -3,27 +3,25 @@ from itertools import chain
 from contextlib import ExitStack
 from typing import List, Optional, Type
 
-from mangum.protocols import HTTPCycle, LifespanCycle
-from mangum.handlers import ALB, HTTPGateway, APIGateway, LambdaAtEdge
-from mangum.exceptions import ConfigurationError
-from mangum.types import (
+import flask
+import flask.typing
+
+from caliber.protocols import HTTPCycle, LifespanCycle
+from caliber.handlers import GCP
+from caliber.exceptions import ConfigurationError
+from caliber.types import (
     ASGI,
     LifespanMode,
-    LambdaConfig,
-    LambdaEvent,
-    LambdaContext,
-    LambdaHandler,
+    Config,
+    Handler,
 )
 
 
-logger = logging.getLogger("mangum")
+logger = logging.getLogger("caliber")
 
 
-HANDLERS: List[Type[LambdaHandler]] = [
-    ALB,
-    HTTPGateway,
-    APIGateway,
-    LambdaAtEdge,
+HANDLERS: List[Type[Handler]] = [
+    GCP
 ]
 
 DEFAULT_TEXT_MIME_TYPES: List[str] = [
@@ -36,13 +34,13 @@ DEFAULT_TEXT_MIME_TYPES: List[str] = [
 ]
 
 
-class Mangum:
+class Caliber:
     def __init__(
         self,
         app: ASGI,
         lifespan: LifespanMode = "auto",
-        api_gateway_base_path: str = "/",
-        custom_handlers: Optional[List[Type[LambdaHandler]]] = None,
+        base_path: str = "/",
+        custom_handlers: Optional[List[Type[Handler]]] = None,
         text_mime_types: Optional[List[str]] = None,
         exclude_headers: Optional[List[str]] = None,
     ) -> None:
@@ -55,25 +53,28 @@ class Mangum:
         self.lifespan = lifespan
         self.custom_handlers = custom_handlers or []
         exclude_headers = exclude_headers or []
-        self.config = LambdaConfig(
-            api_gateway_base_path=api_gateway_base_path or "/",
+        self.config = Config(
+            base_path=base_path or "/",
             text_mime_types=text_mime_types or [*DEFAULT_TEXT_MIME_TYPES],
             exclude_headers=[header.lower() for header in exclude_headers],
         )
 
-    def infer(self, event: LambdaEvent, context: LambdaContext) -> LambdaHandler:
+    def infer(self, request: flask.Request) -> Handler:
         for handler_cls in chain(self.custom_handlers, HANDLERS):
-            if handler_cls.infer(event, context, self.config):
-                return handler_cls(event, context, self.config)
-        raise RuntimeError(  # pragma: no cover
+            if handler_cls.infer(request, self.config):
+                return handler_cls(request, self.config)
+        raise RuntimeError(
             "The adapter was unable to infer a handler to use for the event. This "
             "is likely related to how the Lambda function was invoked. (Are you "
             "testing locally? Make sure the request payload is valid for a "
             "supported handler.)"
         )
 
-    def __call__(self, event: LambdaEvent, context: LambdaContext) -> dict:
-        handler = self.infer(event, context)
+    def handler(self, request: flask.Request) -> flask.Response:
+        return self.__call__(request)
+
+    def __call__(self, request: flask.Request) -> flask.Response:
+        handler = self.infer(request)
         with ExitStack() as stack:
             if self.lifespan in ("auto", "on"):
                 lifespan_cycle = LifespanCycle(self.app, self.lifespan)
@@ -84,4 +85,4 @@ class Mangum:
 
             return handler(http_response)
 
-        assert False, "unreachable"  # pragma: no cover
+        assert False, "unreachable"
