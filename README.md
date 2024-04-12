@@ -1,6 +1,6 @@
-# Caliber
+# Vellox
 
-Caliber is an adapter for running [ASGI](https://asgi.readthedocs.io/en/latest) applications in GCP Cloud Functions.
+Vellox is an adapter for running [ASGI](https://asgi.readthedocs.io/en/latest) applications in GCP Cloud Functions.
 
 ## Requirements
 
@@ -9,7 +9,7 @@ Python 3.8+
 ## Example
 
 ```python
-from caliber import Caliber
+from vellox import Vellox
 
 async def app(scope, receive, send):
     await send(
@@ -22,17 +22,17 @@ async def app(scope, receive, send):
     await send({"type": "http.response.body", "body": b"Hello, world!"})
 
 
-caliber = Caliber(app=app, lifespan="off")
+vellox = Vellox(app=app, lifespan="off")
 
 def handler(request):
-    return caliber(request)
+    return vellox(request)
 ```
 
 Or using a framework:
 
 ```python
 from fastapi import FastAPI
-from caliber import Caliber
+from vellox import Vellox
 
 app = FastAPI()
 
@@ -46,8 +46,8 @@ def read_root():
 def read_item(item_id: int, q: str = None):
     return {"item_id": item_id, "q": q}
 
-caliber = Caliber(app=app, lifespan="off")
+vellox = Vellox(app=app, lifespan="off")
 
 def handler(request):
-    return caliber(request)
+    return vellox(request)
 ```

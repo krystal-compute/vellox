@@ -5,10 +5,10 @@ from typing import List, Optional, Type
 
 import flask
 
-from caliber.protocols import HTTPCycle, LifespanCycle
-from caliber.handlers import GCP
-from caliber.exceptions import ConfigurationError
-from caliber.types import (
+from vellox.protocols import HTTPCycle, LifespanCycle
+from vellox.handlers import GCP
+from vellox.exceptions import ConfigurationError
+from vellox.types import (
     ASGI,
     LifespanMode,
     Config,
@@ -16,7 +16,7 @@ from caliber.types import (
 )
 
 
-logger = logging.getLogger("caliber")
+logger = logging.getLogger("vellox")
 
 
 HANDLERS: List[Type[Handler]] = [
@@ -33,7 +33,7 @@ DEFAULT_TEXT_MIME_TYPES: List[str] = [
 ]
 
 
-class Caliber:
+class Vellox:
     def __init__(
         self,
         app: ASGI,

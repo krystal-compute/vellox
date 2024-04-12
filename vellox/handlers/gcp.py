@@ -1,11 +1,11 @@
 import flask
 
-from caliber.handlers.utils import (
+from vellox.handlers.utils import (
     get_server_and_port,
     handle_exclude_headers,
     strip_path,
 )
-from caliber.types import (
+from vellox.types import (
     Response,
     Config,
     Scope,

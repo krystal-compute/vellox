@@ -3,8 +3,8 @@ import enum
 import logging
 from io import BytesIO
 
-from caliber.types import ASGI, Message, Scope, Response
-from caliber.exceptions import UnexpectedMessage
+from vellox.types import ASGI, Message, Scope, Response
+from vellox.exceptions import UnexpectedMessage
 
 
 class HTTPCycleState(enum.Enum):
@@ -31,7 +31,7 @@ class HTTPCycle:
         self.scope = scope
         self.buffer = BytesIO()
         self.state = HTTPCycleState.REQUEST
-        self.logger = logging.getLogger("caliber.http")
+        self.logger = logging.getLogger("vellox.http")
         self.app_queue: asyncio.Queue[Message] = asyncio.Queue()
         self.app_queue.put_nowait(
             {

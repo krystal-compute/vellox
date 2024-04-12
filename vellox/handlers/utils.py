@@ -3,11 +3,11 @@ from urllib.parse import unquote
 
 import flask
 
-from caliber.types import Headers, Config
+from vellox.types import Headers, Config
 
 
 def get_server_and_port(request: flask.Request) -> Tuple[str, int]:
-    server_name = request.headers.get("host", "caliber")
+    server_name = request.headers.get("host", "vellox")
     server_port = 80
     server = (server_name, int(server_port))
 

@@ -4,8 +4,8 @@ import logging
 from types import TracebackType
 from typing import Optional, Type
 
-from caliber.types import ASGI, LifespanMode, Message
-from caliber.exceptions import LifespanUnsupported, LifespanFailure, UnexpectedMessage
+from vellox.types import ASGI, LifespanMode, Message
+from vellox.exceptions import LifespanUnsupported, LifespanFailure, UnexpectedMessage
 
 
 class LifespanCycleState(enum.Enum):
@@ -61,7 +61,7 @@ class LifespanCycle:
         self.app_queue: asyncio.Queue[Message] = asyncio.Queue()
         self.startup_event: asyncio.Event = asyncio.Event()
         self.shutdown_event: asyncio.Event = asyncio.Event()
-        self.logger = logging.getLogger("caliber.lifespan")
+        self.logger = logging.getLogger("vellox.lifespan")
 
     def __enter__(self) -> None:
         """Runs the event loop for application startup."""
