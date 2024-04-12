@@ -64,7 +64,7 @@ class Vellox:
                 return handler_cls(request, self.config)
         raise RuntimeError(
             "The adapter was unable to infer a handler to use for the event. This "
-            "is likely related to how the Lambda function was invoked. (Are you "
+            "is likely related to how the GCP Cloud Functions was invoked. (Are you "
             "testing locally? Make sure the request payload is valid for a "
             "supported handler.)"
         )
