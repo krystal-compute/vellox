@@ -1,5 +1,10 @@
 # Vellox
 
+<a href="https://pypi.org/project/vellox">
+    <img src="https://badge.fury.io/py/vellox.svg" alt="Package version">
+</a>
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/vellox.svg?style=flat-square">
+
 Vellox is an adapter for running [ASGI](https://asgi.readthedocs.io/en/latest) applications in GCP Cloud Functions.
 
 ## Requirements
