@@ -23,7 +23,8 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.8"
 
-Flask = ">=2.0.2"
+Flask = "==2.2.5"
+typing_extensions = "==4.7.1"
 
 
 [build-system]

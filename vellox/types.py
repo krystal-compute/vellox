@@ -10,9 +10,9 @@ from typing import (
     Callable,
     Literal,
     Protocol,
-    TypedDict,
-    TypeAlias,
+    TypedDict
 )
+from typing_extensions import TypeAlias
 
 import flask
 
