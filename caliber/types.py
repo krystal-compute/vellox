@@ -8,8 +8,11 @@ from typing import (
     MutableMapping,
     Awaitable,
     Callable,
+    Literal,
+    Protocol,
+    TypedDict,
+    TypeAlias,
 )
-from typing_extensions import Literal, Protocol, TypedDict, TypeAlias
 
 import flask
 

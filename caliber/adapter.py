@@ -4,7 +4,6 @@ from contextlib import ExitStack
 from typing import List, Optional, Type
 
 import flask
-import flask.typing
 
 from caliber.protocols import HTTPCycle, LifespanCycle
 from caliber.handlers import GCP
