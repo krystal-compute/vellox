@@ -34,6 +34,7 @@ def handle_exclude_headers(
     for h in headers:
         header_key, header_value = h
         header_key = header_key.decode()
+        header_value = header_value.decode()
         if header_key in config["exclude_headers"]:
             continue
         finalized_headers[header_key] = header_value
