@@ -2,6 +2,10 @@
 
 Caliber is an adapter for running [ASGI](https://asgi.readthedocs.io/en/latest) applications in GCP Cloud Functions.
 
+## Requirements
+
+Python 3.8+
+
 ## Example
 
 ```python
