@@ -27,6 +27,13 @@ Flask = "==2.2.5"
 typing_extensions = "==4.7.1"
 
 
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.5.3"
+mkdocs-material = "^9.5.17"
+mkdocstrings = "^0.24.3"
+mkautodoc = "^0.2.0"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
