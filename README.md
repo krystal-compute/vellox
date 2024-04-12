@@ -11,6 +11,12 @@ Vellox is an adapter for running [ASGI](https://asgi.readthedocs.io/en/latest) a
 
 Python 3.8+
 
+## Installation
+
+```bash
+pip install vellox
+```
+
 ## Example
 
 ```python
