@@ -29,7 +29,7 @@ def handler(request):
     return vellox(request)
 ```
 
-None of the framework details are important here. The routing decorator, request parameter, and return value of the endpoint method could be anything. The `app` instance will be a valid `app` parameter for Mangum so long as the framework exposes an ASGI-compatible interface:
+None of the framework details are important here. The routing decorator, request parameter, and return value of the endpoint method could be anything. The `app` instance will be a valid `app` parameter for Vellox so long as the framework exposes an ASGI-compatible interface:
 
 ```python
 class Application(Protocol):
@@ -177,7 +177,7 @@ def handler(request):
 
 [Django](https://docs.djangoproject.com/) is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.
 
-It started introducing ASGI support in version [3.0](https://docs.djangoproject.com/en/3.0/releases/3.0/#asgi-support). Certain async capabilities are not yet implemented and planned for future releases, however it can still be used with Mangum and other ASGI applications at the outer application level.
+It started introducing ASGI support in version [3.0](https://docs.djangoproject.com/en/3.0/releases/3.0/#asgi-support). Certain async capabilities are not yet implemented and planned for future releases, however it can still be used with Vellox and other ASGI applications at the outer application level.
 
 ```python
 # asgi.py

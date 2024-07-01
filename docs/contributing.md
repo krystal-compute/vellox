@@ -48,13 +48,13 @@ Here are a few things you might consider before opening a new issue:
 
 - Is there already a related issue in the [tracker](https://github.com/junah201/vellox/issues)?
 
-- Is this a problem related to Mangum itself or a third-party dependency?
+- Is this a problem related to Vellox itself or a third-party dependency?
 
 It may still be perfectly valid to open an issue if one or more of these is true, but thinking about these questions might help reveal an existing answer sooner.
 
 ### Technical support
 
-You may run into problems running Mangum that are related to a deployment tool (e.g. [Serverless Framework](https://www.serverless.com)), an ASGI framework (e.g. [FastAPI](https://fastapi.tiangolo.com/)), or some other external dependency. It is okay to use the tracker to resolve these kinds of issues, but keep in mind that this project does not guaruntee support for all the features of any specific ASGI framework or external tool.
+You may run into problems running Vellox that are related to a deployment tool (e.g. [Serverless Framework](https://www.serverless.com)), an ASGI framework (e.g. [FastAPI](https://fastapi.tiangolo.com/)), or some other external dependency. It is okay to use the tracker to resolve these kinds of issues, but keep in mind that this project does not guaruntee support for all the features of any specific ASGI framework or external tool.
 
 **Note**: These issues will typlically be closed, but it is fine to continue discussion on a closed issue. These issues will be re-opened only if a problem is discovered in Vellox itself.
 
