@@ -14,8 +14,9 @@ def test_default_settings():
 
     assert handler.lifespan == "auto"
     assert handler.config["base_path"] == '/'
-    assert sorted(handler.config["text_mime_types"]
-                  ) == sorted(DEFAULT_TEXT_MIME_TYPES)
+    assert sorted(
+        handler.config["text_mime_types"]
+    ) == sorted(DEFAULT_TEXT_MIME_TYPES)
     assert handler.config["exclude_headers"] == []
 
 

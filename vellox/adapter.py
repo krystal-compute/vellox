@@ -67,7 +67,7 @@ class Vellox:
             "is likely related to how the GCP Cloud Functions was invoked. (Are you "
             "testing locally? Make sure the request payload is valid for a "
             "supported handler.)"
-        )
+        )  # pragma: no cover
 
     def handler(self, request: flask.Request) -> flask.Response:
         return self.__call__(request)
@@ -84,4 +84,4 @@ class Vellox:
 
             return handler(http_response)
 
-        assert False, "unreachable"
+        assert False, "unreachable"  # pragma: no cover
