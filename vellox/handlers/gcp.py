@@ -1,4 +1,5 @@
 import flask
+from typing import Dict, Any
 
 from vellox.handlers.utils import (
     get_server_and_port,
@@ -41,6 +42,10 @@ class GCP:
         return self.request.get_data()
 
     @property
+    def state(self) -> Dict[str, Any]:
+        return self.config["state"]
+
+    @property
     def scope(self) -> Scope:
 
         return {
@@ -69,7 +74,8 @@ class GCP:
                 0,
             ),
             "asgi": {"version": "3.0", "spec_version": "2.0"},
-            "flask.request": self.request
+            "flask.request": self.request,
+            "state": self.config["state"]
         }
 
     def __call__(self, response: Response) -> flask.Response:

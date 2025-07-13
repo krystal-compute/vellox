@@ -10,7 +10,8 @@ from typing import (
     Callable,
     Literal,
     Protocol,
-    TypedDict
+    TypedDict,
+    Dict,
 )
 from typing_extensions import TypeAlias
 
@@ -38,12 +39,14 @@ class Response(TypedDict):
     status: int
     headers: Headers
     body: bytes
+    state: Dict[str, Any]
 
 
 class Config(TypedDict):
     base_path: str
     text_mime_types: List[str]
     exclude_headers: List[str]
+    state: Dict[str, Any]
 
 
 class Handler(Protocol):

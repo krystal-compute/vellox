@@ -56,9 +56,9 @@ class Vellox:
         self.config = Config(
             base_path=base_path or "/",
             text_mime_types=text_mime_types or [*DEFAULT_TEXT_MIME_TYPES],
-            exclude_headers=[header.lower() for header in exclude_headers]
+            exclude_headers=[header.lower() for header in exclude_headers],
+            state=state or {}
         )
-        self.state = state or {}
 
     def infer(self, request: flask.Request) -> Handler:
         for handler_cls in chain(self.custom_handlers, HANDLERS):
@@ -82,7 +82,7 @@ class Vellox:
                 stack.enter_context(lifespan_cycle)
 
             http_cycle = HTTPCycle(handler.scope, handler.body)
-            http_response = http_cycle(self.app, self.state)
+            http_response = http_cycle(self.app)
 
             return handler(http_response)
 
