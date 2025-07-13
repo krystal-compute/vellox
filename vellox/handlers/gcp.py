@@ -74,8 +74,7 @@ class GCP:
                 0,
             ),
             "asgi": {"version": "3.0", "spec_version": "2.0"},
-            "flask.request": self.request,
-            "state": self.config["state"]
+            "flask.request": self.request
         }
 
     def __call__(self, response: Response) -> flask.Response:

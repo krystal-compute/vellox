@@ -77,11 +77,16 @@ class Vellox:
     def __call__(self, request: flask.Request) -> flask.Response:
         handler = self.infer(request)
         with ExitStack() as stack:
+            lifespan_state = self.config["state"]
             if self.lifespan in ("auto", "on"):
-                lifespan_cycle = LifespanCycle(self.app, self.lifespan)
+                lifespan_cycle = LifespanCycle(self.app, self.lifespan, self.config["state"])
                 stack.enter_context(lifespan_cycle)
+                lifespan_state = lifespan_cycle.get_state()
 
-            http_cycle = HTTPCycle(handler.scope, handler.body)
+            http_scope = handler.scope.copy()
+            http_scope["state"] = lifespan_state
+
+            http_cycle = HTTPCycle(http_scope, handler.body)
             http_response = http_cycle(self.app)
 
             return handler(http_response)

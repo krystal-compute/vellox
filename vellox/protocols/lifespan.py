@@ -2,7 +2,7 @@ import asyncio
 import enum
 import logging
 from types import TracebackType
-from typing import Optional, Type
+from typing import Optional, Type, Dict, Any
 
 from vellox.types import ASGI, LifespanMode, Message
 from vellox.exceptions import LifespanUnsupported, LifespanFailure, UnexpectedMessage
@@ -52,9 +52,10 @@ class LifespanCycle:
     shutdown flow.
     """
 
-    def __init__(self, app: ASGI, lifespan: LifespanMode) -> None:
+    def __init__(self, app: ASGI, lifespan: LifespanMode, state: Optional[Dict[str, Any]] = None) -> None:
         self.app = app
         self.lifespan = lifespan
+        self.state_dict = state or {}
         self.state: LifespanCycleState = LifespanCycleState.CONNECTING
         self.exception: Optional[BaseException] = None
         self.loop = asyncio.get_event_loop()
@@ -81,8 +82,11 @@ class LifespanCycle:
         """Calls the application with the `lifespan` connection scope."""
         try:
             await self.app(
-                {"type": "lifespan", "asgi": {
-                    "spec_version": "2.0", "version": "3.0"}},
+                {
+                    "type": "lifespan",
+                    "asgi": {"spec_version": "2.0", "version": "3.0"},
+                    "state": self.state_dict
+                },
                 self.receive,
                 self.send,
             )
@@ -162,6 +166,10 @@ class LifespanCycle:
                 message_value = message.get("message", "")
                 raise LifespanFailure(
                     f"Lifespan shutdown failure. {message_value}")
+
+    def get_state(self) -> Dict[str, Any]:
+        """Returns the state that should be passed to HTTP requests."""
+        return self.state_dict
 
     async def startup(self) -> None:
         """Pushes the `lifespan` startup event to the queue and handles errors."""
