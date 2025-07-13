@@ -2,6 +2,7 @@ import asyncio
 import enum
 import logging
 from io import BytesIO
+from typing import Dict, Any
 
 from vellox.types import ASGI, Message, Scope, Response
 from vellox.exceptions import UnexpectedMessage
@@ -41,7 +42,7 @@ class HTTPCycle:
             }
         )
 
-    def __call__(self, app: ASGI) -> Response:
+    def __call__(self, app: ASGI, state: Dict[str, Any]) -> Response:
         asgi_instance = self.run(app)
         try:
             loop = asyncio.get_event_loop()
@@ -55,6 +56,7 @@ class HTTPCycle:
             "status": self.status,
             "headers": self.headers,
             "body": self.body,
+            "state": state,
         }
 
     async def run(self, app: ASGI) -> None:

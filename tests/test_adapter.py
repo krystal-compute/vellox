@@ -34,3 +34,16 @@ def test_invalid_options(arguments, message):
         Vellox(app, **arguments)
 
     assert str(exc.value) == message
+
+
+def test_state_constructor(state_test_case_fixture):
+    handler = Vellox(app, state=state_test_case_fixture)
+
+    assert handler.state == state_test_case_fixture
+
+
+def test_state_setter(state_test_case_fixture):
+    handler = Vellox(app)
+    handler.state = state_test_case_fixture
+
+    assert handler.state == state_test_case_fixture

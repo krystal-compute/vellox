@@ -1,7 +1,7 @@
 import logging
 from itertools import chain
 from contextlib import ExitStack
-from typing import List, Optional, Type
+from typing import List, Optional, Type, Dict, Any
 
 import flask
 
@@ -42,6 +42,7 @@ class Vellox:
         custom_handlers: Optional[List[Type[Handler]]] = None,
         text_mime_types: Optional[List[str]] = None,
         exclude_headers: Optional[List[str]] = None,
+        state: Optional[Dict[str, Any]] = None,
     ) -> None:
         if lifespan not in ("auto", "on", "off"):
             raise ConfigurationError(
@@ -55,8 +56,9 @@ class Vellox:
         self.config = Config(
             base_path=base_path or "/",
             text_mime_types=text_mime_types or [*DEFAULT_TEXT_MIME_TYPES],
-            exclude_headers=[header.lower() for header in exclude_headers],
+            exclude_headers=[header.lower() for header in exclude_headers]
         )
+        self.state = state or {}
 
     def infer(self, request: flask.Request) -> Handler:
         for handler_cls in chain(self.custom_handlers, HANDLERS):
@@ -80,7 +82,7 @@ class Vellox:
                 stack.enter_context(lifespan_cycle)
 
             http_cycle = HTTPCycle(handler.scope, handler.body)
-            http_response = http_cycle(self.app)
+            http_response = http_cycle(self.app, self.state)
 
             return handler(http_response)
 
